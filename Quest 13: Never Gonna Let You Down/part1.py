@@ -1,25 +1,37 @@
-X = 0
-Y = 1
+from graph import MazeGraph, Vertex
 
 file = open('part1.txt', 'r')
-lines = file.readlines()
+tmp = file.readlines()
 file.close()
 
-cols = len(lines[0][:-1])
+lines = [t[:-1] for t in tmp]
+print(lines)
+
+cols = len(lines[0])
 rows = len(lines)
 
-maze = [[0 for i in range(cols)] for j in range(rows)]
-
-start, end = (), ()
+maze_info = {}
 
 for i in range(rows):
     for j in range(cols):
-        maze[i][j] = lines[i][j]
-        
-        if maze[i][j] == 'S':
-            start = (i, j)
-        
-        if maze[i][j] == 'E':
-            end = (i, j)
+        if lines[i][j] != '#':
+            adjacent = []
+            
+            if i-1 > 0 and lines[i-1][j] != '#':
+                adjacent.append((i-1,j))
+                
+            if j-1 > 0 and lines[i][j-1] != '#':
+                adjacent.append((i,j-1))
+                
+            if i+1 < rows and lines[i+1][j] != '#':
+                adjacent.append((i+1,j))
+                
+            if j+1 < cols and lines[i][j+1] != '#':
+                adjacent.append((i,j+1))
+            
+            maze_info[(i,j,lines[i][j])] = adjacent
 
-print(start, end)
+
+maze_graph = MazeGraph(maze_info)
+
+maze_graph.find_shortest_path()
